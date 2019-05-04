@@ -27,8 +27,6 @@ using VideoFrameGeneric = VideoFrameOpenCV;
 using namespace std;
 using namespace wscDrone;
 
-//#define NO_FLIGHT // uncomment thus to allow the drones to fly in this demo
-
 // 'using' permits us to use things like 'Mat' instead of 'cv::Mat' all the time
 using cv::Mat;
 using cv::Rect;
@@ -39,6 +37,8 @@ using cv::Scalar;
 // We need a vectory of drone instances, and a vector of frame objects for their streaming video
 vector<shared_ptr<Bebop2>>            g_drones;
 vector<shared_ptr<VideoFrameGeneric>> g_frames;
+
+bool missionGo = false;
 
 bool processingDone = true;      // flag used to indicated when the processing thread is done with a frame
 bool shouldExit = false;         // flag used to indicate the program should exit.
@@ -80,34 +80,33 @@ int main(int argc, char **argv)
 
 // If NO_FLIGHT is defined, the drones will not take off. This is helpful just to test
 // video and move the drones around manually by hand.
-#ifndef NO_FLIGHT
 
-    // In order to get drones to do things simaltaneously, they need their own threads.
-    // Both Alpha and Bravo will take off, execute mission1(), then land at the same time.
-    std::thread alphaThread( [&]() {
-        takeoffDrone(0);
-        mission1(0);
-        landDrone(0);
-    });
+    if(missionGo){
+        // In order to get drones to do things simaltaneously, they need their own threads.
+        // Both Alpha and Bravo will take off, execute mission1(), then land at the same time.
+        std::thread alphaThread( [&]() {
+            takeoffDrone(0);
+            mission1(0);
+            landDrone(0);
+        });
 
-    std::thread bravoThread( [&]() {
-        takeoffDrone(1);
-        mission1(1);
-        landDrone(1);
-    });
+        std::thread bravoThread( [&]() {
+            takeoffDrone(1);
+            mission1(1);
+            landDrone(1);
+        });
 
-//    std::thread charlieThread( [&]() {
-//        takeoffDrone(2);
-//        mission1(2);
-//        landDrone(2);
-//    });
-
+    //    std::thread charlieThread( [&]() {
+    //        takeoffDrone(2);
+    //        mission1(2);
+    //        landDrone(2);
+    //    });
+}
 
 
     // Wait for threads to complete
     if (alphaThread.joinable()) { alphaThread.join(); }
     if (bravoThread.joinable()) { bravoThread.join(); }
-#endif
 
     if (displayThread.joinable()) { displayThread.join(); }
     return EXIT_SUCCESS;
@@ -329,6 +328,10 @@ case 112: // P - Take a picture with the selected drone, the download on a separ
     case 45 : // numeric "-"
         cout << "MANUAL: Descending!" << endl;
         g_drones[droneUnderManualControl]->getPilot()->moveDirection(MoveDirection::DOWN);
+        break;
+     case 103: // "g"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
         break;
     default:
         if (key > 0) {

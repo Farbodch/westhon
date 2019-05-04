@@ -80,52 +80,52 @@ void mission1(int droneId)
 
 
 
-CameraControlPtr camera = g_drones[droneId]->getCameraControl();
-PilotPtr pilot = g_drones[droneId]->getPilot();
+    CameraControlPtr camera = g_drones[droneId]->getCameraControl();
+    PilotPtr pilot = g_drones[droneId]->getPilot();
 
-float x_coord = 0.0f;
-float y_coord = 0.0f;
-float drone_yaw = -90.0f;
-float cam_tilt = 0.0f;
-float cam_pan = 0.0f;
-float arrCoord[1][1];
+    float x_coord = 0.0f;
+    float y_coord = 0.0f;
+    float drone_yaw = -90.0f;
+    float cam_tilt = 0.0f;
+    float cam_pan = 0.0f;
+    float arrCoord[1][1];
 
-camera->setForward();
+    camera->setForward();
 
-pilot->moveRelativeMetres(0.0, 0.5f); 
-waitSeconds(2);
-pilot->moveRelativeMetres(0.0, -0.5f);
-waitSeconds(2);
-pilot->moveRelativeMetres(0.0, 1.0f); 
-waitSeconds(2);
-pilot->moveRelativeMetres(0.0, -1.0f);
-waitSeconds(2);
+    pilot->moveRelativeMetres(0.0, 0.5f); 
+    waitSeconds(2);
+    pilot->moveRelativeMetres(0.0, -0.5f);
+    waitSeconds(2);
+    pilot->moveRelativeMetres(0.0, 1.0f); 
+    waitSeconds(2);
+    pilot->moveRelativeMetres(0.0, -1.0f);
+    waitSeconds(2);
 
-camera->setTiltPan(0.0f, 45.0f); 
-waitSeconds(3);
-camera->setTiltPan(0.0f, -45.0f); 
-waitSeconds(3);
-camera->setTiltPan(45.0f, 0.0f); 
-waitSeconds(3);
-camera->setTiltPan(-45.0f, 0.0f); 
-waitSeconds(3);
-camera->setTiltPan(45.0f, -45.0f); 
-waitSeconds(3);
-camera->setTiltPan(-45.0f, 45.0f); 
-waitSeconds(3);
+    camera->setTiltPan(0.0f, 45.0f); 
+    waitSeconds(3);
+    camera->setTiltPan(0.0f, -45.0f); 
+    waitSeconds(3);
+    camera->setTiltPan(45.0f, 0.0f); 
+    waitSeconds(3);
+    camera->setTiltPan(-45.0f, 0.0f); 
+    waitSeconds(3);
+    camera->setTiltPan(45.0f, -45.0f); 
+    waitSeconds(3);
+    camera->setTiltPan(-45.0f, 45.0f); 
+    waitSeconds(3);
 
-pilot->moveRelativeMetres(1.0, 1.0f); 
-waitSeconds(2);
-pilot->moveRelativeMetres(-1.0, 0.0f);
-waitSeconds(2);
-pilot->moveRelativeMetres(0.0, 1.0f);
-pilot->setHeading(drone_yaw);
-pilot->moveRelativeMetres(0.0, 1.0f);
-pilot->setHeading(drone_yaw);
-pilot->moveRelativeMetres(0.0, 1.0f);
-pilot->setHeading(drone_yaw);
-pilot->moveRelativeMetres(0.0, 1.0f);
-pilot->setHeading(drone_yaw);
+    pilot->moveRelativeMetres(1.0, 1.0f); 
+    waitSeconds(2);
+    pilot->moveRelativeMetres(-1.0, 0.0f);
+    waitSeconds(2);
+    pilot->moveRelativeMetres(0.0, 1.0f);
+    pilot->setHeading(drone_yaw);
+    pilot->moveRelativeMetres(0.0, 1.0f);
+    pilot->setHeading(drone_yaw);
+    pilot->moveRelativeMetres(0.0, 1.0f);
+    pilot->setHeading(drone_yaw);
+    pilot->moveRelativeMetres(0.0, 1.0f);
+    pilot->setHeading(drone_yaw);
 
 
 
