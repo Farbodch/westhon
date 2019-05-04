@@ -38,7 +38,8 @@ using cv::Scalar;
 vector<shared_ptr<Bebop2>>            g_drones;
 vector<shared_ptr<VideoFrameGeneric>> g_frames;
 
-bool missionGo = false;
+volatile bool missionGo = false;
+bool onTheFly = false;
 
 bool processingDone = true;      // flag used to indicated when the processing thread is done with a frame
 bool shouldExit = false;         // flag used to indicate the program should exit.
@@ -81,34 +82,35 @@ int main(int argc, char **argv)
 // If NO_FLIGHT is defined, the drones will not take off. This is helpful just to test
 // video and move the drones around manually by hand.
 
-    if(missionGo){
+    if(missionGo && onTheFly){
         // In order to get drones to do things simaltaneously, they need their own threads.
         // Both Alpha and Bravo will take off, execute mission1(), then land at the same time.
         std::thread alphaThread( [&]() {
-            takeoffDrone(0);
+            //takeoffDrone(0);
             mission1(0);
             landDrone(0);
         });
 
         std::thread bravoThread( [&]() {
-            takeoffDrone(1);
+            //takeoffDrone(1);
             mission1(1);
             landDrone(1);
         });
 
-    //    std::thread charlieThread( [&]() {
-    //        takeoffDrone(2);
-    //        mission1(2);
-    //        landDrone(2);
-    //    });
+       std::thread charlieThread( [&]() {
+           //takeoffDrone(2);
+           mission1(2);
+           landDrone(2);
+       });
 }
 
 
     // Wait for threads to complete
-    if (alphaThread.joinable()) { alphaThread.join(); }
-    if (bravoThread.joinable()) { bravoThread.join(); }
+    if (alphaThread.joinable()) {alphaThread.join();}
+    if (bravoThread.joinable()) {bravoThread.join();}
+    if (charlieThread.joinable()) {charlieThread.join();}
 
-    if (displayThread.joinable()) { displayThread.join(); }
+    if (displayThread.joinable()) {displayThread.join();}
     return EXIT_SUCCESS;
 }
  
@@ -240,24 +242,24 @@ void openCVKeyCallbacks(const int key)
         shouldExit = true;
         break;
 
-case 112: // P - Take a picture with the selected drone, the download on a separate thread
-    {
-        g_drones[droneUnderManualControl]->getCameraControl()->capturePhoto();
+    case 112: // P - Take a picture with the selected drone, the download on a separate thread
+        {
+            g_drones[droneUnderManualControl]->getCameraControl()->capturePhoto();
 
-        std::thread download(
-                []() {
-            string ipAddress = g_drones[droneUnderManualControl]->getIpAddress();
-            ostringstream command;
-            command << "wget -r --no-parent -nc -A '*.dng,*.jpg' -P ./drone_" <<  droneUnderManualControl;
-            // command << "wget -r --no-parent --delete-after -nc -A '*.dng,*.jpg' -P ./drone_" <<  droneUnderManualControl; // Try using this version to autodelete files after download! (--delete-after)
-            command << " -nd ftp://" << ipAddress << "/internal_000/Bebop_2/media/";
-            cout << "Sending command: " << command.str() << endl;
-            int ret = system(command.str().c_str()); // Send the command to a shell to execute
-            if (ret != 0) { cout << "DOWNLOAD ERROR: returned " << ret << endl; }
-        });
-        download.detach();
-        break;
-    }
+            std::thread download(
+                    []() {
+                string ipAddress = g_drones[droneUnderManualControl]->getIpAddress();
+                ostringstream command;
+                command << "wget -r --no-parent -nc -A '*.dng,*.jpg' -P ./drone_" <<  droneUnderManualControl;
+                // command << "wget -r --no-parent --delete-after -nc -A '*.dng,*.jpg' -P ./drone_" <<  droneUnderManualControl; // Try using this version to autodelete files after download! (--delete-after)
+                command << " -nd ftp://" << ipAddress << "/internal_000/Bebop_2/media/";
+                cout << "Sending command: " << command.str() << endl;
+                int ret = system(command.str().c_str()); // Send the command to a shell to execute
+                if (ret != 0) { cout << "DOWNLOAD ERROR: returned " << ret << endl; }
+            });
+            download.detach();
+            break;
+        }
 
 
     case 32 :   // spacebar - LAND ALL DRONES
@@ -299,10 +301,12 @@ case 112: // P - Take a picture with the selected drone, the download on a separ
     case 116: // 't'
         cout << "MANUAL: Taking off!" << endl;
         g_drones[droneUnderManualControl]->getPilot()->takeOff();
+        onTheFly = true;
         break;
-    case 108: // 't'
+    case 108: // 'l'
         cout << "MANUAL: Landing!" << endl;
         g_drones[droneUnderManualControl]->getPilot()->land();
+        onTheFly = false;
         break;
     case 81:   // left arrow
         cout << "MANUAL: Left!" << endl;
@@ -329,10 +333,38 @@ case 112: // P - Take a picture with the selected drone, the download on a separ
         cout << "MANUAL: Descending!" << endl;
         g_drones[droneUnderManualControl]->getPilot()->moveDirection(MoveDirection::DOWN);
         break;
-     case 103: // "g"
+    case 103: // "g"
         cout << "Mission Go" << endl;
         missionGo = missionGo!;
         break;
+  /*   case 119: // "w"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;
+    case 115: // "s"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;
+    case 97: // "a"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;
+    case 100: // "d"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;
+    case 101: // "e"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;
+    case 113: // "q"
+        cout << "Mission Go" << endl;
+        missionGo = missionGo!;
+        break;    
+        
+         */
+
+
     default:
         if (key > 0) {
             cout << "Unknown key pressed: " << key << endl;
@@ -340,3 +372,4 @@ case 112: // P - Take a picture with the selected drone, the download on a separ
         break;
     }
 }
+

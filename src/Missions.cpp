@@ -63,24 +63,24 @@ void stopDrone(int droneId)
 //void mission1(shared_ptr<Bebop2> bebop2Ptr)
 void mission1(int droneId)
 {
-//    CameraControlPtr camera  = g_drones[droneId]->getCameraControl();
-//    PilotPtr         pilot   = g_drones[droneId]->getPilot();
+   CameraControlPtr camera  = g_drones[droneId]->getCameraControl();
+   PilotPtr         pilot   = g_drones[droneId]->getPilot();
 
-//    camera->setTiltPan(17.0f, 45.0f); // Look up and to the right
-//    waitSeconds(5);
-//    camera->setTiltPan(-17.0f, -45.0f); // Look down and to the left
-//    waitSeconds(5);
-//    camera->setForward();
-//    waitSeconds(5);
+   camera->setTiltPan(17.0f, 45.0f); // Look up and to the right
+   waitSeconds(5);
+   camera->setTiltPan(-17.0f, -45.0f); // Look down and to the left
+   waitSeconds(5);
+   camera->setForward();
+   waitSeconds(5);
 
-//    pilot->moveRelativeMetres(2.0, 0.0); // Move forward 1 metre
-//    pilot->moveRelativeMetres(-2.0, 0.0); // move backward 1 meter
-
-
+   pilot->moveRelativeMetres(2.0, 0.0); // Move forward 1 metre
+   pilot->moveRelativeMetres(-2.0, 0.0); // move backward 1 meter
 
 
 
-    CameraControlPtr camera = g_drones[droneId]->getCameraControl();
+
+
+/*     CameraControlPtr camera = g_drones[droneId]->getCameraControl();
     PilotPtr pilot = g_drones[droneId]->getPilot();
 
     float x_coord = 0.0f;
@@ -125,7 +125,7 @@ void mission1(int droneId)
     pilot->moveRelativeMetres(0.0, 1.0f);
     pilot->setHeading(drone_yaw);
     pilot->moveRelativeMetres(0.0, 1.0f);
-    pilot->setHeading(drone_yaw);
+    pilot->setHeading(drone_yaw); */
 
 
 
