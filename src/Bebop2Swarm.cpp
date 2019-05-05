@@ -121,8 +121,6 @@ int main(int argc, char **argv)
      if(missionGo && onTheFly){
         // In order to get drones to do things simaltaneously, they need their own threads.
         // Both Alpha and Bravo will take off, execute mission1(), then land at the same time.
-
- 
         std::thread alphaThread( [&]() {
             
             takeoffDrone(0);
