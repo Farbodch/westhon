@@ -126,6 +126,10 @@ int main(int argc, char **argv)
         std::thread alphaThread( [&]() {
             
             takeoffDrone(0);
+            camera->setTiltPan(0.0f, 45.0f); 
+            waitSeconds(3);
+            camera->setTiltPan(0.0f, -90.0f); 
+            waitSeconds(3);
             somePythonB = true;
             while(somePythonB){
                 //Under Manual Control Until "f" (NOT "F"!) is pressed
