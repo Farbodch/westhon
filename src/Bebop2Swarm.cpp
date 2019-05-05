@@ -151,8 +151,8 @@ int main(int argc, char **argv)
 
     // Wait for threads to complete
 	if (alphaThread.joinable()) {alphaThread.join();}
-	if (bravoThread.joinable()) {bravoThread.join();}
-	if (charlieThread.joinable()) {charlieThread.join();}
+	//if (bravoThread.joinable()) {bravoThread.join();}
+	//if (charlieThread.joinable()) {charlieThread.join();}
    }
     if (displayThread.joinable()) {displayThread.join();}
     return EXIT_SUCCESS;
