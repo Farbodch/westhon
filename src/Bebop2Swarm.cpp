@@ -39,11 +39,13 @@ vector<shared_ptr<Bebop2>>            g_drones;
 vector<shared_ptr<VideoFrameGeneric>> g_frames;
 
 volatile bool missionGo = false;
-bool onTheFly = false;
+volatile bool onTheFly = false;
 
 bool processingDone = true;      // flag used to indicated when the processing thread is done with a frame
 bool shouldExit = false;         // flag used to indicate the program should exit.
 int droneUnderManualControl = 0; // selects which drone is controlled manually by the keyboard
+
+int missNum = 1;
 
 // FUNCTION PROTOTYPES
 std::thread launchDisplayThread();         // a function to launch the primary display thread
@@ -75,41 +77,47 @@ int main(int argc, char **argv)
     auto displayThread = launchDisplayThread();
 
     // Start each drone one at a time
-    for (int droneId = 0; droneId < NUM_DRONES; droneId++) {
+    for (int droneId = 0; droneId < 3; droneId++) {
         	startDrone(droneId);
     }
 
 // If NO_FLIGHT is defined, the drones will not take off. This is helpful just to test
 // video and move the drones around manually by hand.
-
+    while(!missionGo){}
     if(missionGo && onTheFly){
         // In order to get drones to do things simaltaneously, they need their own threads.
         // Both Alpha and Bravo will take off, execute mission1(), then land at the same time.
         std::thread alphaThread( [&]() {
             //takeoffDrone(0);
-            mission1(0);
+	    if(missNum == 1){mission1(0);}
+	    else if (missNum == 2){mission2(0);}
+	    else {cout << "**!!!!!!!!why alpha..." << endl;}
             landDrone(0);
         });
 
         std::thread bravoThread( [&]() {
             //takeoffDrone(1);
-            mission1(1);
+            if(missNum == 1){mission1(1);}
+	    else if (missNum == 2){mission2(1);}
+	    else {cout << "**!!!!!!!!why bravo..." << endl;}
             landDrone(1);
         });
 
        std::thread charlieThread( [&]() {
            //takeoffDrone(2);
-           mission1(2);
+           if(missNum == 1){mission1(2);}
+	   else if (missNum == 2){mission2(2);}
+	   else {cout << "**!!!!!!!!why charlie..." << endl;}
            landDrone(2);
        });
-}
+
 
 
     // Wait for threads to complete
-    if (alphaThread.joinable()) {alphaThread.join();}
-    if (bravoThread.joinable()) {bravoThread.join();}
-    if (charlieThread.joinable()) {charlieThread.join();}
-
+	if (alphaThread.joinable()) {alphaThread.join();}
+	if (bravoThread.joinable()) {bravoThread.join();}
+	if (charlieThread.joinable()) {charlieThread.join();}
+   }
     if (displayThread.joinable()) {displayThread.join();}
     return EXIT_SUCCESS;
 }
@@ -300,7 +308,9 @@ void openCVKeyCallbacks(const int key)
         break;
     case 116: // 't'
         cout << "MANUAL: Taking off!" << endl;
-        g_drones[droneUnderManualControl]->getPilot()->takeOff();
+	for(int i = 0; i < 3; i++){
+        g_drones[i]->getPilot()->takeOff();
+	}
         onTheFly = true;
         break;
     case 108: // 'l'
@@ -335,7 +345,7 @@ void openCVKeyCallbacks(const int key)
         break;
     case 103: // "g"
         cout << "Mission Go" << endl;
-        missionGo = missionGo!;
+        missionGo = true;
         break;
   /*   case 119: // "w"
         cout << "Mission Go" << endl;
@@ -363,6 +373,11 @@ void openCVKeyCallbacks(const int key)
         break;    
         
          */
+    case 102: // "f"
+        cout << "Mission2 Go!" << endl;
+        if(missNum == 1){missNum = 2;}
+	else if(missNum == 2){missNum = 1;}
+        break;
 
 
     default:

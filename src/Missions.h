@@ -15,6 +15,7 @@ void stopDrone(int droneId);
 void setFlightAltitude(int droneId, float heightMeters);
 
 void mission1(int droneId);
+void mission2(int droneId);
 void missionBox(int droneId);
 void missionBoxInv(int droneId);
 void missionTForward(int droneId);

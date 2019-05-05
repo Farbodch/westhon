@@ -76,11 +76,11 @@ void mission1(int droneId)
    pilot->moveRelativeMetres(2.0, 0.0); // Move forward 1 metre
    pilot->moveRelativeMetres(-2.0, 0.0); // move backward 1 meter
 
+}
 
+void mission2(int droneId){
 
-
-
-/*     CameraControlPtr camera = g_drones[droneId]->getCameraControl();
+     CameraControlPtr camera = g_drones[droneId]->getCameraControl();
     PilotPtr pilot = g_drones[droneId]->getPilot();
 
     float x_coord = 0.0f;
@@ -125,9 +125,7 @@ void mission1(int droneId)
     pilot->moveRelativeMetres(0.0, 1.0f);
     pilot->setHeading(drone_yaw);
     pilot->moveRelativeMetres(0.0, 1.0f);
-    pilot->setHeading(drone_yaw); */
-
-
+    pilot->setHeading(drone_yaw); 
 
 }
 
