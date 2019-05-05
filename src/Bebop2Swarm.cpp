@@ -408,7 +408,7 @@ void openCVKeyCallbacks(const int key)
         break; 
         
     case 102: // "f"
-        cout << "PyControl Off" << endl
+        cout << "PyControl Off" << endl;
         somePythonB = false;
         //cout << "Mission2 Go!" << endl;
         //if(missNum == 1){missNum = 2;}
